@@ -1,6 +1,7 @@
 #!/bin/zsh
 
 tunc_array=($(ifconfig | grep tun | awk '{print $1}'))
+date
 for tunc in "${tunc_array[@]}"
 do
     echo "Tx Dropped: /sys/class/net/$tunc/statistics/tx_dropped"
