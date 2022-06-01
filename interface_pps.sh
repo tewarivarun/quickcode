@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INTERVAL="1"  # update interval in seconds
+INTERVAL="2"  # update interval in seconds
 
 if [ -z "$1" ]; then
         echo
@@ -26,8 +26,12 @@ do
         DRX2=`cat /sys/class/net/$1/statistics/rx_dropped`
         DTX2=`cat /sys/class/net/$1/statistics/tx_dropped`
         TXPPS=`expr $T2 - $T1`
+        TXPPS=`expr $TXPPS / $INTERVAL`
         RXPPS=`expr $R2 - $R1`
+        RXPPS=`expr $RXPPS / $INTERVAL`
         DRXPPS=`expr $DRX2 - $DRX1`
+        DRXPPS=`expr $DRXPPS / $INTERVAL`
         DTXPPS=`expr $DTX2 - $DTX1`
+        DTXPPS=`expr $DTXPPS / $INTERVAL`
         echo "$1: TX : $TXPPS pkts/s RX : $RXPPS pkts/s DRX : $DRXPPS pkts/s DTX : $DTXPPS pkts/s"
 done
