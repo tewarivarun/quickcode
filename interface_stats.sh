@@ -20,11 +20,17 @@ do
         T1=`cat /sys/class/net/$1/statistics/tx_packets`
         DRX1=`cat /sys/class/net/$1/statistics/rx_dropped`
         DTX1=`cat /sys/class/net/$1/statistics/tx_dropped`
+        RxBytes1=`cat /sys/class/net/$1/statistics/rx_bytes`
+        TxBytes1=`cat /sys/class/net/$1/statistics/tx_bytes`
+
         sleep $INTERVAL
         R2=`cat /sys/class/net/$1/statistics/rx_packets`
         T2=`cat /sys/class/net/$1/statistics/tx_packets`
         DRX2=`cat /sys/class/net/$1/statistics/rx_dropped`
         DTX2=`cat /sys/class/net/$1/statistics/tx_dropped`
+        RxBytes2=`cat /sys/class/net/$1/statistics/rx_bytes`
+        TxBytes2=`cat /sys/class/net/$1/statistics/tx_bytes`
+
         TXPPS=`expr $T2 - $T1`
         TXPPS=`expr $TXPPS / $INTERVAL`
         RXPPS=`expr $R2 - $R1`
@@ -33,5 +39,20 @@ do
         DRXPPS=`expr $DRXPPS / $INTERVAL`
         DTXPPS=`expr $DTX2 - $DTX1`
         DTXPPS=`expr $DTXPPS / $INTERVAL`
-        echo "$1: TX : $TXPPS pkts/s RX : $RXPPS pkts/s DRX : $DRXPPS pkts/s DTX : $DTXPPS pkts/s"
+
+        TxBPS=`expr $TxBytes2 - $TxBytes1`
+        TxBPS=`expr $TxBPS / $INTERVAL`
+	# in KB
+        TxBPS=`expr $TxBPS / 1024`
+	# in MB
+        TxBPS=`expr $TxBPS / 1024`
+
+        RxBPS=`expr $RxBytes2 - $RxBytes1`
+        RxBPS=`expr $RxBPS / $INTERVAL`
+	# in kB
+        RxBPS=`expr $RxBPS / 1024`
+	# in mB
+        RxBPS=`expr $RxBPS / 1024`
+
+        echo "$1: TX : $TXPPS pkts/s $TxBPS MBytes/s RX : $RXPPS pkts/s $RxBPS MBytes/s DRX : $DRXPPS pkts/s DTX : $DTXPPS pkts/s"
 done
